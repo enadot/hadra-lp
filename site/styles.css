@@ -1,0 +1,437 @@
+/* ==========================================================================
+   עם מקדשי שביעי — landing page
+   Ported from the Claude Design prototype "גרסה C - עם מקדשי שביעי".
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Livorna';
+  src: url('assets/FBLIVORNA-BOLD.OTF') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Metropolitana';
+  src: url('assets/FBMETROPOLITANA-REGULAR.OTF') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Metropolitana';
+  src: url('assets/FBMETROPOLITANA-BOLD.OTF') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --gold: #f3c96b;
+  --gold-bright: #ffe09a;
+  --gold-ink: #3d2a05;
+  --deep: #061b2a;
+  --navy: #083a58;
+  --ice: #dff2fb;
+  --ice-soft: #eaf6fc;
+  --ice-dim: #cfe8f5;
+  --ice-faint: #bcd8e6;
+  --ink: #0d2b3d;
+  --shell: 1100px;
+  --gutter: 24px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* `hidden` must win over the flex/grid display rules below */
+[hidden] { display: none !important; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--deep);
+  color: #ffffff;
+  font-family: 'Metropolitana', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--gold); }
+a:hover { color: var(--gold-bright); }
+
+/* --- shell ---------------------------------------------------------------- */
+
+.page {
+  position: relative;
+  min-height: 100vh;
+  background: radial-gradient(120% 90% at 50% 0%, #0a6f9e 0%, var(--navy) 46%, var(--deep) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.page__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center top;
+  opacity: .3;
+  mix-blend-mode: luminosity;
+  pointer-events: none;
+}
+
+.page__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8, 58, 88, .25) 0%, rgba(6, 27, 42, .6) 65%, rgba(6, 27, 42, .88) 100%);
+  pointer-events: none;
+}
+
+/* every band sits above the background layers */
+.masthead, .hero, .product, .order, .footer {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+/* --- masthead ------------------------------------------------------------- */
+
+.masthead {
+  max-width: var(--shell);
+  padding: 26px var(--gutter) 0;
+  display: flex;
+  justify-content: center;
+}
+
+.masthead__logo {
+  height: 48px;
+  width: auto;
+}
+
+/* --- hero ----------------------------------------------------------------- */
+
+.hero {
+  max-width: var(--shell);
+  padding: 36px var(--gutter) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.hero__eyebrow {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: .02em;
+}
+
+.hero__title {
+  margin: 0;
+  font-family: 'Livorna', serif;
+  font-weight: 700;
+  font-size: clamp(54px, 11vw, 140px);
+  line-height: 1;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, .4);
+  text-wrap: balance;
+}
+
+.hero__subtitle {
+  margin: 0;
+  font-size: clamp(30px, 4vw, 46px);
+  font-weight: 700;
+  color: var(--ice);
+}
+
+/* --- product -------------------------------------------------------------- */
+
+.product {
+  max-width: var(--shell);
+  padding: 32px var(--gutter) 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 32px 56px;
+}
+
+.product__book {
+  width: min(70vw, 380px);
+  height: auto;
+  filter: drop-shadow(0 30px 50px rgba(0, 0, 0, .5));
+}
+
+.product__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  max-width: 420px;
+}
+
+.product__lede {
+  margin: 0;
+  font-size: clamp(22px, 2.6vw, 27px);
+  line-height: 1.6;
+  color: var(--ice-soft);
+  text-wrap: pretty;
+}
+
+/* --- benefits ------------------------------------------------------------- */
+
+.benefits {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: right;
+}
+
+.benefits__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: clamp(19px, 2.2vw, 23px);
+  color: #ffffff;
+}
+
+.benefits__tick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--gold-ink);
+  font-size: 16px;
+}
+
+/* --- price + CTA ---------------------------------------------------------- */
+
+.price {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  background: var(--gold);
+  color: var(--gold-ink);
+  border-radius: 16px;
+  padding: 14px 30px;
+}
+
+.price__label {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.price__amount {
+  font-family: 'Livorna', serif;
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cta {
+  text-decoration: none;
+  background: #ffffff;
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 26px;
+  padding: 18px 46px;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .35);
+  transition: background-color .15s ease;
+}
+
+.cta:hover,
+.cta:focus-visible {
+  background: var(--ice);
+  color: var(--navy);
+}
+
+/* --- order form ----------------------------------------------------------- */
+
+.order {
+  max-width: var(--shell);
+  padding: 48px var(--gutter) 64px;
+}
+
+.card {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 32px;
+  background: rgba(255, 255, 255, .08);
+  border: 1.5px solid rgba(255, 255, 255, .25);
+  border-radius: 22px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.card__success {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 0;
+  text-align: center;
+}
+
+.card__success-title {
+  font-family: 'Livorna', serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.card__success-text {
+  font-size: 20px;
+  line-height: 1.6;
+  color: #ffffff;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form__head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+.form__title {
+  margin: 0;
+  font-family: 'Livorna', serif;
+  font-size: clamp(44px, 5vw, 62px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--gold);
+}
+
+.form__subtitle {
+  margin: 0;
+  font-size: 19px;
+  color: var(--ice-dim);
+}
+
+/* two balanced columns — never a single orphaned field in a third column */
+.form__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.field {
+  font-family: 'Metropolitana', sans-serif;
+  font-size: 19px;
+  padding: 16px 18px;
+  border: none;
+  border-radius: 12px;
+  outline: none;
+  background: #ffffff;
+  color: var(--ink);
+  color-scheme: light;
+  width: 100%;
+  min-width: 0;
+}
+
+.field--tel { text-align: right; }
+
+.field:focus-visible {
+  box-shadow: 0 0 0 3px var(--gold);
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ice-soft);
+  cursor: pointer;
+}
+
+.consent__box {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: var(--gold);
+  color-scheme: light;
+  cursor: pointer;
+}
+
+.form__error {
+  margin: 0;
+  color: #ffb4a8;
+  font-size: 16px;
+  text-align: center;
+}
+
+.submit {
+  font-family: 'Metropolitana', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  background: var(--gold);
+  color: var(--gold-ink);
+  border: none;
+  border-radius: 14px;
+  padding: 18px;
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+
+.submit:hover,
+.submit:focus-visible {
+  background: var(--gold-bright);
+}
+
+.submit[disabled] {
+  opacity: .65;
+  cursor: default;
+}
+
+/* --- footer --------------------------------------------------------------- */
+
+.footer {
+  background: rgba(0, 0, 0, .4);
+  padding: 18px var(--gutter);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.footer__logo {
+  height: 32px;
+  width: auto;
+  opacity: .9;
+}
+
+.footer__text {
+  font-size: 15px;
+  color: var(--ice-faint);
+}
+
+/* --- motion ---------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+
+html { scroll-behavior: smooth; }
