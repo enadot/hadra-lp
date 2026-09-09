@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8"></meta>
+<title>עם מקדשי שביעי — הלכות שבת</title>
+<style>
+@font-face { font-family: 'Livorna'; src: url('assets/FBLIVORNA-BOLD.OTF') format('opentype'); font-weight: 700; }
+@font-face { font-family: 'Metropolitana'; src: url('assets/FBMETROPOLITANA-REGULAR.OTF') format('opentype'); font-weight: 400; }
+@font-face { font-family: 'Metropolitana'; src: url('assets/FBMETROPOLITANA-BOLD.OTF') format('opentype'); font-weight: 700; }
+html, body { margin: 0; padding: 0; }
+body { background: #04121c; }
+a { color: #f3c96b; } a:hover { color: #ffe09a; }
+input::placeholder, select { font-family: 'Metropolitana', sans-serif; }
+</style>
+</helmet>
+<div dir="rtl" style="min-height:100vh; background:linear-gradient(160deg,#0a95c9 0%,#0a6f9e 34%,#083a58 62%,#04121c 100%); font-family:'Metropolitana',sans-serif; color:#ffffff; display:flex; flex-direction:column; align-items:center; overflow:hidden">
+  <div style="width:100%; max-width:1060px; padding:28px 24px 0; box-sizing:border-box; display:flex; justify-content:flex-start">
+    <img src="assets/hadra-logo-white.png" alt="הדרא — הרבה יותר מהוצאה לאור" style="height:52px; width:auto"></img>
+  </div>
+  <div style="width:100%; max-width:1060px; padding:24px 24px 0; box-sizing:border-box; display:flex; flex-wrap:wrap; align-items:center; gap:32px 48px">
+    <div style="flex:1 1 380px; min-width:0; display:flex; flex-direction:column; align-items:flex-start; gap:20px; padding-bottom:16px">
+      <div style="background:#f3c96b; color:#3d2a05; font-weight:700; font-size:20px; letter-spacing:.04em; padding:8px 20px; border-radius:999px">חדש! · בהסכמת גדולי הפוסקים</div>
+      <h1 style="font-family:'Livorna',serif; font-weight:700; font-size:clamp(52px,10vw,118px); line-height:1.02; margin:0; text-wrap:balance">עם מקדשי שביעי</h1>
+      <p style="font-size:clamp(28px,3.6vw,40px); font-weight:700; margin:0; color:#dff2fb">הלכות שבת בשפה ברורה ואקטואלית</p>
+      <p style="font-size:clamp(20px,2.4vw,25px); line-height:1.6; margin:0; max-width:40ch; color:#eaf6fc; text-wrap:pretty">הספר האידיאלי ללימוד הלכות השבת עם בני המשפחה בסעודות השבת — שבת הלכה למעשה, אקטואלי לכל המשפחה.</p>
+      <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap">
+        <div style="display:flex; flex-direction:column; align-items:center; background:#ffffff; color:#083a58; border-radius:14px; padding:10px 22px">
+          <span style="font-size:17px; font-weight:700; color:#8a6a1c">מחיר מסובסד</span>
+          <span style="font-family:'Livorna',serif; font-size:44px; font-weight:700; line-height:1">45 ש"ח</span>
+        </div>
+        <a href="#order" style="text-decoration:none; background:#f3c96b; color:#3d2a05; font-weight:700; font-size:26px; padding:18px 42px; border-radius:14px; box-shadow:0 6px 18px rgba(0,0,0,.3)" style-hover="background:#ffe09a">להזמנה ›</a>
+      </div>
+    </div>
+    <div style="flex:1 1 340px; min-width:0; display:flex; justify-content:center; position:relative">
+      <img src="assets/challah.png" alt="" style="position:absolute; inset-inline-start:52%; top:8%; width:58%; max-width:320px; height:auto; opacity:.95; filter:drop-shadow(0 18px 30px rgba(0,0,0,.35))"></img>
+      <img src="assets/book.png" alt="הספר עם מקדשי שביעי" style="position:relative; width:78%; max-width:420px; height:auto; filter:drop-shadow(0 24px 40px rgba(0,0,0,.45))"></img>
+    </div>
+  </div>
+  <div id="order" style="width:100%; max-width:1060px; padding:40px 24px 56px; box-sizing:border-box">
+    <div style="background:#ffffff; color:#0d2b3d; border-radius:20px; padding:36px 32px; box-shadow:0 20px 50px rgba(0,0,0,.35); max-width:640px; margin:0 auto">
+      <sc-if value="{{ submitted }}" hint-placeholder-val="{{ false }}">
+        <div style="text-align:center; display:flex; flex-direction:column; gap:12px; padding:24px 0">
+          <span style="font-family:'Livorna',serif; font-size:32px; font-weight:700; color:#0a6f9e">ההזמנה התקבלה!</span>
+          <span style="font-size:18px; line-height:1.6">תודה {{ name }}, נציג יחזור אליכם בהקדם להשלמת ההזמנה.</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ notSubmitted }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; flex-direction:column; gap:18px">
+          <div style="text-align:center; display:flex; flex-direction:column; gap:6px">
+            <span style="font-family:'Livorna',serif; font-size:40px; font-weight:700">להזמנת הספר</span>
+            <span style="font-size:19px; color:#4a6272">מלאו פרטים ונחזור אליכם להשלמת ההזמנה · 45 ש"ח בלבד</span>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px">
+            <input type="text" placeholder="שם מלא" value="{{ name }}" onChange="{{ setName }}" style="font-family:'Metropolitana',sans-serif; font-size:19px; padding:16px 18px; border:1.5px solid #c6d6df; border-radius:10px; outline:none; background:#ffffff; color:#0d2b3d; color-scheme:light" style-focus="border-color:#0a95c9"></input>
+            <input type="tel" placeholder="טלפון" value="{{ phone }}" onChange="{{ setPhone }}" style="font-family:'Metropolitana',sans-serif; font-size:19px; padding:16px 18px; border:1.5px solid #c6d6df; border-radius:10px; outline:none; background:#ffffff; color:#0d2b3d; color-scheme:light" style-focus="border-color:#0a95c9"></input>
+            <input type="text" placeholder="כתובת למשלוח" value="{{ address }}" onChange="{{ setAddress }}" style="font-family:'Metropolitana',sans-serif; font-size:19px; padding:16px 18px; border:1.5px solid #c6d6df; border-radius:10px; outline:none; background:#ffffff; color:#0d2b3d; color-scheme:light" style-focus="border-color:#0a95c9"></input>
+            <select value="{{ qty }}" onChange="{{ setQty }}" style="font-size:19px; padding:16px 18px; border:1.5px solid #c6d6df; border-radius:10px; background:#fff; color:#0d2b3d; outline:none">
+              <option value="1">כמות: 1 ספר</option>
+              <option value="2">כמות: 2 ספרים</option>
+              <option value="3">כמות: 3 ספרים</option>
+              <option value="4">כמות: 4 ספרים</option>
+              <option value="5">כמות: 5 ומעלה</option>
+            </select>
+          </div>
+          <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}">
+            <div style="color:#b3261e; font-size:15px; text-align:center">{{ error }}</div>
+          </sc-if>
+          <button onClick="{{ submit }}" style="font-family:'Metropolitana',sans-serif; font-weight:700; font-size:24px; background:#0a6f9e; color:#ffffff; border:none; border-radius:12px; padding:16px; cursor:pointer" style-hover="background:#0a95c9">אני רוצה את הספר »</button>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+  <div style="width:100%; background:rgba(0,0,0,.35); padding:20px 24px; box-sizing:border-box; display:flex; justify-content:center; align-items:center; gap:12px">
+    <img src="assets/hadra-logo-white.png" alt="הדרא" style="height:34px; width:auto; opacity:.9"></img>
+    <span style="font-size:14px; color:#bcd8e6">הוצאה לאור והפצה: הדרא — הרבה יותר מהוצאה לאור</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { name: '', phone: '', address: '', qty: '1', submitted: false, error: '' };
+  renderVals() {
+    const s = this.state;
+    const set = (k) => (e) => this.setState({ [k]: e.target.value, error: '' });
+    return {
+      name: s.name, phone: s.phone, address: s.address, qty: s.qty,
+      submitted: s.submitted, notSubmitted: !s.submitted, error: s.error,
+      setName: set('name'), setPhone: set('phone'), setAddress: set('address'), setQty: set('qty'),
+      submit: () => {
+        if (!s.name.trim() || !s.phone.trim()) { this.setState({ error: 'נא למלא שם וטלפון' }); return; }
+        this.setState({ submitted: true });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
