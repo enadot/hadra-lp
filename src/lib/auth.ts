@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import {
   SESSION_COOKIE,
   SESSION_MAX_AGE,
+  authSecret,
   createSessionToken,
   isValidSessionToken,
 } from './auth-token';
@@ -18,8 +19,16 @@ function adminPassword(): string | null {
   return process.env.NODE_ENV === 'production' ? null : 'hadra';
 }
 
+/** Which required settings are missing — empty when the panel can sign in. */
+export function missingAdminConfig(): string[] {
+  const missing: string[] = [];
+  if (adminPassword() === null) missing.push('ADMIN_PASSWORD');
+  if (authSecret() === null) missing.push('AUTH_SECRET');
+  return missing;
+}
+
 export function isAdminConfigured(): boolean {
-  return adminPassword() !== null;
+  return missingAdminConfig().length === 0;
 }
 
 export async function isAuthenticated(): Promise<boolean> {

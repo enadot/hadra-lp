@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { isAuthenticated, isAdminConfigured } from '@/lib/auth';
+import { isAuthenticated, missingAdminConfig } from '@/lib/auth';
 import { LoginForm } from './LoginForm';
 import styles from '../admin.module.css';
 
@@ -11,17 +11,18 @@ export const metadata: Metadata = {
 
 export default async function LoginPage() {
   if (await isAuthenticated()) redirect('/admin');
+  const missing = missingAdminConfig();
 
   return (
     <main className={styles.loginShell} dir="rtl">
       <div className={styles.loginCard}>
         <h1 className={styles.brand}>לוח בקרה — הדרא</h1>
-        {isAdminConfigured() ? (
+        {missing.length === 0 ? (
           <LoginForm />
         ) : (
           <p className={styles.noticeBad}>
-            לא הוגדרה סיסמת מנהל. הגדירו את משתנה הסביבה ADMIN_PASSWORD ב-Vercel
-            (Settings → Environment Variables) ופרסו מחדש.
+            חסרות הגדרות: {missing.join(', ')}. הגדירו אותן ב-Vercel (Settings →
+            Environment Variables) עם ערך לא ריק, ופרסו מחדש.
           </p>
         )}
       </div>

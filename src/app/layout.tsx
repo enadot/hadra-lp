@@ -1,15 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import { livorna, metropolitana } from '@/fonts';
+import { resolveSiteUrl } from '@/lib/site-url';
 import './globals.css';
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : 'http://localhost:3000');
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: resolveSiteUrl(),
   title: 'הדרא — הרבה יותר מהוצאה לאור',
   description: 'דפי נחיתה של הוצאת הדרא',
 };
