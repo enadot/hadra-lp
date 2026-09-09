@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import type { Campaign } from '@/content/campaigns';
+import { readTracking } from '@/lib/tracking';
 import styles from './OrderForm.module.css';
 
 type Props = {
@@ -23,6 +24,11 @@ export function OrderForm({ campaign, form }: Props) {
   const [submittedName, setSubmittedName] = useState<string | null>(null);
 
   const successRef = useRef<HTMLDivElement>(null);
+
+  // Persist UTM params from the landing URL as soon as the page loads.
+  useEffect(() => {
+    readTracking();
+  }, []);
 
   useGSAP(
     () => {
@@ -66,6 +72,7 @@ export function OrderForm({ campaign, form }: Props) {
           qty,
           consent,
           company,
+          tracking: readTracking(),
         }),
       });
 

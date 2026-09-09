@@ -8,6 +8,7 @@ import { retryOrder } from '@/lib/orders';
 import { webhookSettingsSchema } from '@/lib/validation';
 import { getCampaign } from '@/content/campaigns';
 import type { ActionState } from './state';
+import { trackingToPayload } from '@/lib/tracking';
 
 async function requireAdmin(): Promise<void> {
   if (!(await isAuthenticated())) redirect('/admin/login');
@@ -98,6 +99,12 @@ export async function testWebhookAction(
     qty: '1',
     consent: true,
     createdAt: new Date().toISOString(),
+    ...trackingToPayload({
+      utm_source: 'test',
+      utm_medium: 'admin',
+      utm_campaign: slug,
+      landing_url: `/${slug}?utm_source=test&utm_medium=admin`,
+    }),
     test: true,
   };
 

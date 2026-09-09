@@ -18,6 +18,20 @@ const statusClass: Record<Order['delivery']['status'], string> = {
   skipped: styles.badgeSkipped,
 };
 
+/** "facebook / cpc / shabbat-launch" — or a dash when the visit carried no UTMs. */
+function sourceLabel(t: Order['tracking'] | undefined): string {
+  const parts = [t?.utm_source, t?.utm_medium, t?.utm_campaign].filter(Boolean);
+  return parts.length ? parts.join(' / ') : '—';
+}
+
+function sourceTitle(t: Order['tracking'] | undefined): string {
+  if (!t) return '';
+  return Object.entries(t)
+    .filter(([, v]) => v)
+    .map(([k, v]) => `${k}: ${v}`)
+    .join('\n');
+}
+
 function RetryButton({ id }: { id: string }) {
   const [state, formAction, pending] = useActionState(retryOrderAction, emptyState);
 
@@ -49,6 +63,7 @@ export function OrdersTable({ orders }: { orders: Order[] }) {
             <th>טלפון</th>
             <th>כתובת</th>
             <th>כמות</th>
+            <th>מקור</th>
             <th>שליחה</th>
             <th />
           </tr>
@@ -63,6 +78,7 @@ export function OrdersTable({ orders }: { orders: Order[] }) {
               </td>
               <td>{order.address || '—'}</td>
               <td>{order.qty}</td>
+              <td title={sourceTitle(order.tracking)}>{sourceLabel(order.tracking)}</td>
               <td title={order.delivery.detail}>
                 <span className={statusClass[order.delivery.status]}>
                   {statusLabel[order.delivery.status]}

@@ -74,9 +74,22 @@ design/                           חומרי העיצוב המקוריים (Clau
   "address": "רחוב הרב קוק 5, ירושלים",
   "qty": "2",
   "consent": true,
-  "createdAt": "2026-09-09T15:36:08.860Z"
+  "createdAt": "2026-09-09T15:36:08.860Z",
+  "utm_source": "facebook",
+  "utm_medium": "cpc",
+  "utm_campaign": "shabbat-launch",
+  "utm_term": "",
+  "utm_content": "",
+  "fbclid": "IwAR...",
+  "gclid": "",
+  "landing_url": "https://example.com/am-mekadshei-shvii?utm_source=facebook&utm_medium=cpc",
+  "referrer": "https://l.facebook.com/"
 }
 ```
+
+פרמטרי ה-UTM ומזהי הקליק (`fbclid`, `gclid`) נקלטים מכתובת הדף בכניסה הראשונה
+ונשמרים ל-session, כך שהם מגיעים גם אם המבקר רענן את הדף לפני ששלח את הטופס.
+שדה שלא היה בכתובת נשלח כמחרוזת ריקה — כדי שהעמודות ב-Sheets/Make יישארו קבועות.
 
 נשלח כ-`POST` עם `Content-Type: application/json`. אם הוגדר טוקן, הוא נשלח
 בכותרת `X-Hadra-Token`. שליחת בדיקה מלוח הבקרה מוסיפה `"test": true`.
@@ -93,7 +106,7 @@ design/                           חומרי העיצוב המקוריים (Clau
 4. פרסו, היכנסו ל-`/admin`, והדביקו את כתובת הוובהוק.
 
 הרשימה המלאה נמצאת ב-`.env.example`. שימו לב: כתובת הוובהוק **לא** נמצאת שם —
-היא מוגדרת בלוח הבקרה.
+היא מוגדרת בלוח הבקרה. כתובת האתר לתגיות OG נגזרת אוטומטית מ-Vercel.
 
 ## עיצוב
 

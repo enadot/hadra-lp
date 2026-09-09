@@ -1,4 +1,15 @@
 import { z } from 'zod';
+import { TRACKING_KEYS } from './tracking';
+
+const trackingValue = z.string().trim().max(200).optional();
+
+export const trackingSchema = z
+  .object({
+    ...Object.fromEntries(TRACKING_KEYS.map((k) => [k, trackingValue])),
+    landing_url: trackingValue,
+    referrer: trackingValue,
+  })
+  .optional();
 
 export const orderInputSchema = z.object({
   campaign: z.string().min(1).max(64),
@@ -10,6 +21,8 @@ export const orderInputSchema = z.object({
   /** Honeypot — real users never fill this. Accepted here and rejected in the
    *  route, so a bot gets a normal-looking 200 instead of a validation error. */
   company: z.string().max(200).optional().default(''),
+  /** UTM / click-id attribution captured on the landing page. */
+  tracking: trackingSchema,
 });
 
 export type OrderInput = z.infer<typeof orderInputSchema>;

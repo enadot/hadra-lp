@@ -2,6 +2,7 @@ import 'server-only';
 import { getStore } from './store';
 import { getWebhookSettings } from './settings';
 import type { OrderInput } from './validation';
+import { trackingToPayload, type Tracking } from './tracking';
 
 const MAX_ORDERS = 200;
 
@@ -16,6 +17,7 @@ export type Order = {
   qty: string;
   consent: true;
   createdAt: string;
+  tracking: Tracking;
   delivery: {
     status: DeliveryStatus;
     /** HTTP status, or null when no request was made. */
@@ -66,6 +68,7 @@ export async function deliverToWebhook(
         qty: order.qty,
         consent: order.consent,
         createdAt: order.createdAt,
+        ...trackingToPayload(order.tracking),
       }),
       signal: controller.signal,
     });
@@ -109,6 +112,7 @@ export async function createOrder(input: OrderInput): Promise<Order> {
     qty: input.qty || '1',
     consent: true,
     createdAt: new Date().toISOString(),
+    tracking: input.tracking ?? {},
     delivery: {
       status: 'skipped',
       httpStatus: null,
