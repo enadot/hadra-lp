@@ -2,6 +2,7 @@ import 'server-only';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { Redis } from '@upstash/redis';
+import { findRedisCredentials } from './redis-env';
 
 /**
  * Tiny key/value abstraction so the app runs with zero setup locally and on
@@ -16,6 +17,8 @@ export type Store = {
   driver: StoreDriver;
   /** false = data disappears on redeploy/cold start (local file fallback). */
   persistent: boolean;
+  /** Which env var supplied the connection (redis) or the file path (file). */
+  source: string;
   get<T>(key: string): Promise<T | null>;
   set<T>(key: string, value: T): Promise<void>;
   del(key: string): Promise<void>;
@@ -24,16 +27,12 @@ export type Store = {
   listIds(key: string, limit: number): Promise<string[]>;
 };
 
-const redisUrl =
-  process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL ?? '';
-const redisToken =
-  process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN ?? '';
-
-function createRedisStore(): Store {
-  const redis = new Redis({ url: redisUrl, token: redisToken });
+function createRedisStore(url: string, token: string, source: string): Store {
+  const redis = new Redis({ url, token });
   return {
     driver: 'redis',
     persistent: true,
+    source,
     async get<T>(key: string) {
       return (await redis.get<T>(key)) ?? null;
     },
@@ -78,6 +77,7 @@ function createFileStore(): Store {
   return {
     driver: 'file',
     persistent: false,
+    source: filePath,
     async get<T>(key: string) {
       const data = await readFileStore();
       return (data[key] as T) ?? null;
@@ -110,7 +110,10 @@ let cached: Store | null = null;
 
 export function getStore(): Store {
   if (!cached) {
-    cached = redisUrl && redisToken ? createRedisStore() : createFileStore();
+    const creds = findRedisCredentials();
+    cached = creds
+      ? createRedisStore(creds.url, creds.token, creds.source)
+      : createFileStore();
   }
   return cached;
 }

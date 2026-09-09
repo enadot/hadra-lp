@@ -4,6 +4,7 @@ import { campaigns } from '@/content/campaigns';
 import { getWebhookSettings } from '@/lib/settings';
 import { listOrders } from '@/lib/orders';
 import { getStore } from '@/lib/store';
+import { storageEnvNames } from '@/lib/redis-env';
 import { WebhookPanel } from './WebhookPanel';
 import { OrdersTable } from './OrdersTable';
 import { logoutAction } from './actions';
@@ -19,13 +20,26 @@ export const dynamic = 'force-dynamic';
 export default async function AdminPage() {
   const store = getStore();
 
-  const data = await Promise.all(
-    campaigns.map(async (campaign) => ({
-      campaign,
-      settings: await getWebhookSettings(campaign.slug),
-      orders: await listOrders(campaign.slug, 50),
-    })),
-  );
+  let data: Array<{
+    campaign: (typeof campaigns)[number];
+    settings: Awaited<ReturnType<typeof getWebhookSettings>>;
+    orders: Awaited<ReturnType<typeof listOrders>>;
+  }> = [];
+  let storageError: string | null = null;
+
+  try {
+    data = await Promise.all(
+      campaigns.map(async (campaign) => ({
+        campaign,
+        settings: await getWebhookSettings(campaign.slug),
+        orders: await listOrders(campaign.slug, 50),
+      })),
+    );
+  } catch (error) {
+    storageError = error instanceof Error ? error.message : String(error);
+  }
+
+  const envNames = storageEnvNames();
 
   return (
     <main className={styles.shell} dir="rtl">
@@ -39,10 +53,32 @@ export default async function AdminPage() {
           </form>
         </div>
 
-        {!store.persistent ? (
+        {store.persistent ? (
+          <p className={styles.hint}>
+            אחסון: Redis (חובר דרך <code>{store.source}</code>)
+          </p>
+        ) : (
           <p className={styles.noticeWarn}>
-            אחסון זמני בלבד — ההגדרות וההזמנות יימחקו בפריסה הבאה. חברו Upstash
-            Redis ב-Vercel (Storage → Marketplace) כדי לשמור אותם באמת.
+            אחסון זמני בלבד — ההגדרות וההזמנות לא יישמרו. לא נמצאו פרטי חיבור
+            ל-Redis (מחפשים <code>KV_REST_API_URL</code> +{' '}
+            <code>KV_REST_API_TOKEN</code>, <code>UPSTASH_REDIS_REST_URL</code> +{' '}
+            <code>UPSTASH_REDIS_REST_TOKEN</code>, או כל prefix שמסתיים ב-
+            <code>_REST_API_URL</code>/<code>_TOKEN</code>).
+            {envNames.length > 0 ? (
+              <>
+                {' '}
+                משתנים שקיימים כרגע: {envNames.join(', ')}.
+              </>
+            ) : (
+              <> לא נמצא אף משתנה עם REDIS / UPSTASH / KV_ בשם.</>
+            )}{' '}
+            אחרי חיבור או שינוי משתנים ב-Vercel צריך לפרוס מחדש (Redeploy).
+          </p>
+        )}
+
+        {storageError ? (
+          <p className={styles.noticeBad}>
+            שגיאה בחיבור לאחסון ({store.source}): {storageError}
           </p>
         ) : null}
 

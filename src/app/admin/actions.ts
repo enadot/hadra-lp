@@ -9,6 +9,7 @@ import { webhookSettingsSchema } from '@/lib/validation';
 import { getCampaign } from '@/content/campaigns';
 import type { ActionState } from './state';
 import { trackingToPayload } from '@/lib/tracking';
+import { getStore } from '@/lib/store';
 
 async function requireAdmin(): Promise<void> {
   if (!(await isAuthenticated())) redirect('/admin/login');
@@ -70,6 +71,15 @@ export async function saveWebhookAction(
 
   await saveWebhookSettings(slug, parsed.data);
   revalidatePath('/admin');
+
+  const store = getStore();
+  if (!store.persistent && process.env.VERCEL) {
+    return {
+      status: 'error',
+      message:
+        'נשמר באחסון זמני בלבד — Redis לא מחובר, וההגדרה תיעלם. ראו את הדיאגנוסטיקה למעלה.',
+    };
+  }
   return { status: 'ok', message: 'ההגדרות נשמרו' };
 }
 
