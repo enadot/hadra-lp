@@ -1,25 +1,106 @@
-# CODING AGENTS: READ THIS FIRST
+# הדרא — דפי נחיתה
 
-This is a **handoff bundle** from Claude Design (claude.ai/design).
+אתר דפי הנחיתה של הוצאת **הדרא**, בנוי ב-Next.js ומיועד לפריסה ב-Vercel.
+הדף הראשון הוא **עם מקדשי שביעי** (גרסה C מהעיצוב המאושר), עם אנימציות GSAP
+וטופס הזמנה שנשלח לוובהוק שמוגדר מלוח בקרה — בלי פריסה מחדש.
 
-A user mocked up designs in HTML/CSS/JS using an AI design tool, then exported this bundle so a coding agent can implement the designs for real.
+## הרצה מקומית
 
-## What you should do — IMPORTANT
+```bash
+npm install
+npm run dev
+```
 
-**Read the chat transcripts first.** There are 1 chat transcript(s) in `chats/`. The transcripts show the full back-and-forth between the user and the design assistant — they tell you **what the user actually wants** and **where they landed** after iterating. Don't skip them. The final HTML files are the output, but the chat is where the intent lives.
+- דף הנחיתה: http://localhost:3000/am-mekadshei-shvii (הכתובת `/` מפנה אליו)
+- לוח בקרה: http://localhost:3000/admin — סיסמת ברירת מחדל בפיתוח: `hadra`
 
-**Read `project/גרסה C - עם מקדשי שביעי.dc.html` in full.** The user had this file open when they triggered the handoff, so it's almost certainly the primary design they want built. Read it top to bottom — don't skim. Then **follow its imports**: open every file it pulls in (shared components, CSS, scripts) so you understand how the pieces fit together before you start implementing.
+בפיתוח, ההגדרות וההזמנות נשמרות בקובץ `.data/store.json` (לא נכנס לגיט).
 
-**If anything is ambiguous, ask the user to confirm before you start implementing.** It's much cheaper to clarify scope up front than to build the wrong thing.
+## סקריפטים
 
-## About the design files
+| פקודה | מה היא עושה |
+| --- | --- |
+| `npm run dev` | שרת פיתוח |
+| `npm run build` | בילד לפרודקשן |
+| `npm run start` | הרצת הבילד |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | בדיקת טיפוסים |
 
-The design medium is **HTML/CSS/JS** — these are prototypes, not production code. Your job is to **recreate them pixel-perfectly** in whatever technology makes sense for the target codebase (React, Vue, native, whatever fits). Match the visual output; don't copy the prototype's internal structure unless it happens to fit.
+## מבנה הפרויקט
 
-**Don't render these files in a browser or take screenshots unless the user asks you to.** Everything you need — dimensions, colors, layout rules — is spelled out in the source. Read the HTML and CSS directly; a screenshot won't tell you anything they don't.
+```
+src/
+  app/
+    page.tsx                      הפניה לקמפיין הפעיל
+    am-mekadshei-shvii/page.tsx   דף הנחיתה
+    api/orders/route.ts           קליטת הזמנות + שליחה לוובהוק
+    admin/                        לוח הבקרה (מוגן בסיסמה)
+  components/landing/             ספריית הבלוקים המשותפת
+  content/campaigns/              התוכן של כל דף נחיתה
+  fonts/                          FB Livorna + FB Metropolitana
+  lib/                            אחסון, הגדרות, הזמנות, אימות
+  app/globals.css                 טוקנים של המותג (צבעים, טיפוגרפיה)
+design/                           חומרי העיצוב המקוריים (Claude Design)
+```
 
-## Bundle contents
+## הוספת דף נחיתה חדש
 
-- `README.md` — this file
-- `chats/` — conversation transcripts (read these!)
-- `project/` — the `דף נחיתה לספר הלכות שבת` project files (HTML prototypes, assets, components)
+1. הוסיפו קובץ תוכן ב-`src/content/campaigns/<slug>.ts` לפי הטיפוס `Campaign`.
+2. רשמו אותו במערך `campaigns` ב-`src/content/campaigns/index.ts`.
+3. הוסיפו תמונות ב-`public/campaigns/<slug>/`.
+4. צרו `src/app/<slug>/page.tsx` שמרנדר `<LandingShell campaign={...} />`,
+   או שמרכיב את הבלוקים מ-`src/components/landing` בסדר אחר אם העיצוב שונה.
+
+הדף החדש יופיע אוטומטית בלוח הבקרה עם הגדרות וובהוק והזמנות משלו.
+
+## לוח הבקרה — `/admin`
+
+- **כתובת וובהוק** לכל קמפיין, עם מתג הפעלה וטוקן אבטחה אופציונלי.
+  הכתובת נשמרת באחסון, לא במשתני סביבה — אפשר לשנות אותה בכל רגע.
+- **שליחת בדיקה** לכתובת השמורה, עם הצגת התשובה.
+- **הזמנות אחרונות** (עד 200) עם סטטוס שליחה וכפתור שליחה חוזרת.
+
+כל הזמנה נשמרת גם אם הוובהוק נכשל, כך שאף ליד לא הולך לאיבוד — והמזמין
+תמיד רואה אישור.
+
+### מבנה ה-JSON שנשלח לוובהוק
+
+```json
+{
+  "id": "mtu9ghi4-11fu8v",
+  "campaign": "am-mekadshei-shvii",
+  "name": "ישראל ישראלי",
+  "phone": "050-1234567",
+  "address": "רחוב הרב קוק 5, ירושלים",
+  "qty": "2",
+  "consent": true,
+  "createdAt": "2026-09-09T15:36:08.860Z"
+}
+```
+
+נשלח כ-`POST` עם `Content-Type: application/json`. אם הוגדר טוקן, הוא נשלח
+בכותרת `X-Hadra-Token`. שליחת בדיקה מלוח הבקרה מוסיפה `"test": true`.
+
+## פריסה ב-Vercel
+
+1. חברו את הריפו ב-Vercel (Next.js מזוהה אוטומטית, בלי הגדרות מיוחדות).
+2. **אחסון:** Storage → Marketplace → Upstash Redis. החיבור מזריק אוטומטית את
+   `UPSTASH_REDIS_REST_URL` ו-`UPSTASH_REDIS_REST_TOKEN`. בלי זה האתר עובד,
+   אבל ההגדרות וההזמנות נמחקות בכל פריסה — ולוח הבקרה מציג על כך אזהרה.
+3. **משתני סביבה** (Settings → Environment Variables):
+   - `ADMIN_PASSWORD` — סיסמת הכניסה ל-`/admin` (חובה בפרודקשן).
+   - `AUTH_SECRET` — מפתח לחתימת עוגיית ההתחברות. ליצירה: `openssl rand -base64 32`.
+4. פרסו, היכנסו ל-`/admin`, והדביקו את כתובת הוובהוק.
+
+הרשימה המלאה נמצאת ב-`.env.example`. שימו לב: כתובת הוובהוק **לא** נמצאת שם —
+היא מוגדרת בלוח הבקרה.
+
+## עיצוב
+
+הערכים העיצוביים (צבעים, סקאלת טיפוגרפיה, מרווחים) הועברו 1:1 מהעיצוב המאושר
+ויושבים כטוקנים ב-`src/app/globals.css`. חומרי המקור — קבצי `.dc.html`,
+התמלילים וה-PDF של המודעה — נשמרו תחת `design/`.
+
+האנימציות (GSAP + ScrollTrigger) מרוכזות ב-`src/components/landing/LandingMotion.tsx`
+ומופעלות לפי `data-animate`. מי שביקש תנועה מופחתת בהגדרות המערכת מקבל את הדף
+ללא אנימציה כלל.

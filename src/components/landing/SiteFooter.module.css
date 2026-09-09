@@ -1,0 +1,24 @@
+.footer {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 18px var(--gutter);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.logo {
+  height: 32px;
+  width: auto;
+  opacity: 0.9;
+}
+
+.text {
+  font-size: 15px;
+  color: var(--ice-faint);
+}

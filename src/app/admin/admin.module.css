@@ -1,0 +1,241 @@
+.shell {
+  min-height: 100vh;
+  background: #0b1a24;
+  color: #e8f2f8;
+  font-family: var(--font-body);
+  padding: 32px var(--gutter) 64px;
+}
+
+.inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 34px;
+  color: var(--gold);
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.hint {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #9fbccd;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 15px;
+  color: #cfe3ee;
+}
+
+.input {
+  font-family: var(--font-body);
+  font-size: 17px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #06131b;
+  color: #ffffff;
+  outline: none;
+  direction: ltr;
+  text-align: left;
+}
+
+.input:focus-visible {
+  border-color: var(--gold);
+}
+
+.inputRtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--gold);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.button {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: var(--gold);
+  color: var(--gold-ink);
+}
+
+.button:hover:not(:disabled) {
+  background: var(--gold-bright);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.buttonGhost {
+  composes: button;
+  background: transparent;
+  color: #cfe3ee;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.buttonGhost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.notice {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.noticeOk {
+  composes: notice;
+  background: rgba(86, 196, 130, 0.14);
+  color: #a9e9c4;
+}
+
+.noticeBad {
+  composes: notice;
+  background: rgba(255, 120, 100, 0.14);
+  color: #ffb4a8;
+}
+
+.noticeWarn {
+  composes: notice;
+  background: rgba(243, 201, 107, 0.14);
+  color: #f3c96b;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  min-width: 720px;
+}
+
+.table th,
+.table td {
+  text-align: right;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+}
+
+.table th {
+  color: #9fbccd;
+  font-weight: 400;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.badgeDelivered {
+  composes: badge;
+  background: rgba(86, 196, 130, 0.18);
+  color: #a9e9c4;
+}
+
+.badgeFailed {
+  composes: badge;
+  background: rgba(255, 120, 100, 0.18);
+  color: #ffb4a8;
+}
+
+.badgeSkipped {
+  composes: badge;
+  background: rgba(255, 255, 255, 0.12);
+  color: #cfe3ee;
+}
+
+.empty {
+  margin: 0;
+  color: #9fbccd;
+  font-size: 15px;
+}
+
+/* --- login ---------------------------------------------------------------- */
+
+.loginShell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #0b1a24;
+  font-family: var(--font-body);
+  color: #e8f2f8;
+}
+
+.loginCard {
+  width: min(100%, 380px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  padding: 28px;
+}
