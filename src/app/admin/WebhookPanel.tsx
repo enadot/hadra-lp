@@ -10,6 +10,8 @@ type Props = {
   slug: string;
   campaignTitle: string;
   settings: StoredWebhookSettings;
+  /** What this page sends: lead-form orders, or clicks on the purchase buttons. */
+  mode: 'orders' | 'clicks';
 };
 
 function Notice({ state }: { state: ActionState }) {
@@ -21,7 +23,7 @@ function Notice({ state }: { state: ActionState }) {
   );
 }
 
-export function WebhookPanel({ slug, campaignTitle, settings }: Props) {
+export function WebhookPanel({ slug, campaignTitle, settings, mode }: Props) {
   const [saveState, saveFormAction, saving] = useActionState(
     saveWebhookAction,
     emptyState,
@@ -35,8 +37,10 @@ export function WebhookPanel({ slug, campaignTitle, settings }: Props) {
     <section className={styles.panel}>
       <h2 className={styles.panelTitle}>וובהוק — {campaignTitle}</h2>
       <p className={styles.hint}>
-        כל הזמנה נשמרת כאן ובמקביל נשלחת ככתובת שתגדירו (POST עם JSON). אפשר
-        לשנות את הכתובת מתי שרוצים — אין צורך בפריסה מחדש.
+        {mode === 'orders'
+          ? 'כל הזמנה נשמרת כאן ובמקביל נשלחת לכתובת שתגדירו (POST עם JSON, type: "order").'
+          : 'כל קליק על כפתורי הרכישה נשמר כאן ובמקביל נשלח לכתובת שתגדירו (POST עם JSON, type: "click", עם שם הכפתור וה-UTM של המבקר).'}{' '}
+        אפשר לשנות את הכתובת מתי שרוצים — אין צורך בפריסה מחדש.
       </p>
 
       <form action={saveFormAction} className={styles.panel} style={{ border: 'none', padding: 0, background: 'transparent' }}>

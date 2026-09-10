@@ -33,7 +33,7 @@ export function LandingShell({ campaign }: { campaign: Campaign }) {
         <Hero hero={campaign.hero} />
         <ProductBlock product={campaign.product} />
         {campaign.purchase ? (
-          <PurchaseOptions purchase={campaign.purchase} />
+          <PurchaseOptions campaign={campaign.slug} purchase={campaign.purchase} />
         ) : campaign.form ? (
           <OrderForm campaign={campaign.slug} form={campaign.form} />
         ) : null}

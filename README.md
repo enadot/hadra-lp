@@ -66,20 +66,27 @@ design/                           חומרי העיצוב המקוריים (Clau
 
 ## לוח הבקרה — `/admin`
 
-רלוונטי לדפים עם טופס לידים (`form`). דף עם `purchase` מופיע בלוח עם הערה בלבד.
+לכל דף יש וובהוק משלו. דף עם טופס (`form`) שולח הזמנות; דף עם כפתורי רכישה (`purchase`) שולח קליקים.
 
 - **כתובת וובהוק** לכל קמפיין, עם מתג הפעלה וטוקן אבטחה אופציונלי.
   הכתובת נשמרת באחסון, לא במשתני סביבה — אפשר לשנות אותה בכל רגע.
 - **שליחת בדיקה** לכתובת השמורה, עם הצגת התשובה.
-- **הזמנות אחרונות** (עד 200) עם סטטוס שליחה וכפתור שליחה חוזרת.
+- **הזמנות אחרונות** (עד 200) עם סטטוס שליחה וכפתור שליחה חוזרת — לדפים עם טופס.
+- **קליקים על כפתורי הרכישה** (עד 500) עם ספירה לכל כפתור והמקור (UTM) של כל קליק — לדפים עם `purchase`.
 
 כל הזמנה נשמרת גם אם הוובהוק נכשל, כך שאף ליד לא הולך לאיבוד — והמזמין
 תמיד רואה אישור.
 
 ### מבנה ה-JSON שנשלח לוובהוק
 
+כל הודעה נושאת שדה `type` — `order` (טופס), `click` (כפתור רכישה) או `test`
+(בדיקה מלוח הבקרה) — כדי שאפשר יהיה להסתעף ב-Make/n8n.
+
+**הזמנה מטופס** (`type: "order"`):
+
 ```json
 {
+  "type": "order",
   "id": "mtu9ghi4-11fu8v",
   "campaign": "am-mekadshei-shvii",
   "name": "ישראל ישראלי",
@@ -99,6 +106,33 @@ design/                           חומרי העיצוב המקוריים (Clau
   "referrer": "https://l.facebook.com/"
 }
 ```
+
+**קליק על כפתור רכישה** (`type: "click"`) — `button` הוא `online` (רכישה מקוונת),
+`pickup` (איסוף עצמי), `waze` או `maps`; `href` הוא הקישור שנפתח, כולל ה-UTM:
+
+```json
+{
+  "type": "click",
+  "id": "mtuk1x2y-ab12cd",
+  "campaign": "am-mekadshei-shvii",
+  "button": "online",
+  "buttonLabel": "רכישה מקוונת",
+  "href": "https://www.hbooks.co.il/product/...?utm_source=hadra-lp&utm_medium=landing-page&utm_campaign=am-mekadshei-shvii&utm_content=facebook_shabbat-launch",
+  "createdAt": "2026-09-10T08:12:44.120Z",
+  "utm_source": "facebook",
+  "utm_medium": "cpc",
+  "utm_campaign": "shabbat-launch",
+  "utm_term": "",
+  "utm_content": "",
+  "fbclid": "IwAR...",
+  "gclid": "",
+  "landing_url": "https://example.com/am-mekadshei-shvii?utm_source=facebook&utm_medium=cpc",
+  "referrer": "https://l.facebook.com/"
+}
+```
+
+הקליק נשלח מהדפדפן עם `navigator.sendBeacon`, כך שהוא לא מעכב את פתיחת החנות
+ונרשם גם אם המבקר עזב מיד.
 
 פרמטרי ה-UTM ומזהי הקליק (`fbclid`, `gclid`) נקלטים מכתובת הדף בכניסה הראשונה
 ונשמרים ל-session, כך שהם מגיעים גם אם המבקר רענן את הדף לפני ששלח את הטופס.

@@ -40,3 +40,12 @@ export const webhookSettingsSchema = z.object({
 });
 
 export type WebhookSettings = z.infer<typeof webhookSettingsSchema>;
+
+export const clickEventSchema = z.object({
+  campaign: z.string().min(1).max(64),
+  button: z.enum(['online', 'pickup', 'waze', 'maps']),
+  href: z.string().trim().max(1000),
+  tracking: trackingSchema,
+});
+
+export type ClickEventInput = z.infer<typeof clickEventSchema>;

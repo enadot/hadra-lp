@@ -1,12 +1,12 @@
 import 'server-only';
 import { getStore } from './store';
-import { getWebhookSettings } from './settings';
+import { newId, pendingDelivery, postToWebhook, type Delivery } from './webhook';
 import type { OrderInput } from './validation';
 import { trackingToPayload, type Tracking } from './tracking';
 
 const MAX_ORDERS = 200;
 
-export type DeliveryStatus = 'delivered' | 'failed' | 'skipped';
+export type { DeliveryStatus } from './webhook';
 
 export type Order = {
   id: string;
@@ -18,86 +18,25 @@ export type Order = {
   consent: true;
   createdAt: string;
   tracking: Tracking;
-  delivery: {
-    status: DeliveryStatus;
-    /** HTTP status, or null when no request was made. */
-    httpStatus: number | null;
-    detail: string;
-    attemptedAt: string | null;
-  };
+  delivery: Delivery;
 };
 
 const orderKey = (id: string) => `order:${id}`;
 const indexKey = (slug: string) => `orders:${slug}`;
 
-function newId(): string {
-  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-}
-
-/** POST an order to the campaign's configured webhook. Never throws. */
-export async function deliverToWebhook(
-  order: Order,
-): Promise<Order['delivery']> {
-  const settings = await getWebhookSettings(order.campaign);
-  const attemptedAt = new Date().toISOString();
-
-  if (!settings.enabled || !settings.url) {
-    return {
-      status: 'skipped',
-      httpStatus: null,
-      detail: 'לא הוגדר וובהוק פעיל — ההזמנה נשמרה בלוח הבקרה בלבד',
-      attemptedAt: null,
-    };
-  }
-
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10_000);
-    const response = await fetch(settings.url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(settings.token ? { 'X-Hadra-Token': settings.token } : {}),
-      },
-      body: JSON.stringify({
-        id: order.id,
-        campaign: order.campaign,
-        name: order.name,
-        phone: order.phone,
-        address: order.address,
-        qty: order.qty,
-        consent: order.consent,
-        createdAt: order.createdAt,
-        ...trackingToPayload(order.tracking),
-      }),
-      signal: controller.signal,
-    });
-    clearTimeout(timeout);
-
-    return response.ok
-      ? {
-          status: 'delivered',
-          httpStatus: response.status,
-          detail: 'נשלח בהצלחה',
-          attemptedAt,
-        }
-      : {
-          status: 'failed',
-          httpStatus: response.status,
-          detail: `הוובהוק החזיר שגיאה ${response.status}`,
-          attemptedAt,
-        };
-  } catch (error) {
-    return {
-      status: 'failed',
-      httpStatus: null,
-      detail:
-        error instanceof Error && error.name === 'AbortError'
-          ? 'הוובהוק לא הגיב תוך 10 שניות'
-          : 'לא ניתן היה להתחבר לכתובת הוובהוק',
-      attemptedAt,
-    };
-  }
+function orderPayload(order: Order): Record<string, unknown> {
+  return {
+    type: 'order',
+    id: order.id,
+    campaign: order.campaign,
+    name: order.name,
+    phone: order.phone,
+    address: order.address,
+    qty: order.qty,
+    consent: order.consent,
+    createdAt: order.createdAt,
+    ...trackingToPayload(order.tracking),
+  };
 }
 
 /** Store the order, then forward it. The order is kept even if forwarding fails. */
@@ -113,15 +52,10 @@ export async function createOrder(input: OrderInput): Promise<Order> {
     consent: true,
     createdAt: new Date().toISOString(),
     tracking: input.tracking ?? {},
-    delivery: {
-      status: 'skipped',
-      httpStatus: null,
-      detail: 'ממתין לשליחה',
-      attemptedAt: null,
-    },
+    delivery: pendingDelivery,
   };
 
-  order.delivery = await deliverToWebhook(order);
+  order.delivery = await postToWebhook(order.campaign, orderPayload(order));
 
   await store.set(orderKey(order.id), order);
   await store.listPrepend(indexKey(order.campaign), order.id, MAX_ORDERS);
@@ -144,7 +78,10 @@ export async function getOrder(id: string): Promise<Order | null> {
 export async function retryOrder(id: string): Promise<Order | null> {
   const order = await getOrder(id);
   if (!order) return null;
-  const updated: Order = { ...order, delivery: await deliverToWebhook(order) };
+  const updated: Order = {
+    ...order,
+    delivery: await postToWebhook(order.campaign, orderPayload(order)),
+  };
   await getStore().set(orderKey(id), updated);
   return updated;
 }

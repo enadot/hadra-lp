@@ -10,6 +10,7 @@ import { getCampaign } from '@/content/campaigns';
 import type { ActionState } from './state';
 import { trackingToPayload } from '@/lib/tracking';
 import { getStore } from '@/lib/store';
+import { postToWebhook } from '@/lib/webhook';
 
 async function requireAdmin(): Promise<void> {
   if (!(await isAuthenticated())) redirect('/admin/login');
@@ -99,8 +100,12 @@ export async function testWebhookAction(
   if (!settings.url) {
     return { status: 'error', message: 'לא הוגדרה כתובת וובהוק. שמרו כתובת ואז בדקו.' };
   }
+  if (!settings.enabled) {
+    return { status: 'error', message: 'השליחה כבויה — סמנו "שליחה פעילה" ושמרו לפני הבדיקה.' };
+  }
 
-  const payload = {
+  const delivery = await postToWebhook(slug, {
+    type: 'test',
     id: 'test',
     campaign: slug,
     name: 'בדיקה מלוח הבקרה',
@@ -108,6 +113,9 @@ export async function testWebhookAction(
     address: 'כתובת לדוגמה',
     qty: '1',
     consent: true,
+    button: 'online',
+    buttonLabel: 'רכישה מקוונת',
+    href: 'https://example.com/',
     createdAt: new Date().toISOString(),
     ...trackingToPayload({
       utm_source: 'test',
@@ -116,34 +124,11 @@ export async function testWebhookAction(
       landing_url: `/${slug}?utm_source=test&utm_medium=admin`,
     }),
     test: true,
-  };
+  });
 
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10_000);
-    const response = await fetch(settings.url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(settings.token ? { 'X-Hadra-Token': settings.token } : {}),
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
-    });
-    clearTimeout(timeout);
-
-    return response.ok
-      ? { status: 'ok', message: `הוובהוק ענה ${response.status} — הבדיקה עברה` }
-      : { status: 'error', message: `הוובהוק החזיר שגיאה ${response.status}` };
-  } catch (error) {
-    return {
-      status: 'error',
-      message:
-        error instanceof Error && error.name === 'AbortError'
-          ? 'הוובהוק לא הגיב תוך 10 שניות'
-          : 'לא ניתן היה להתחבר לכתובת הוובהוק',
-    };
-  }
+  return delivery.status === 'delivered'
+    ? { status: 'ok', message: `הוובהוק ענה ${delivery.httpStatus} — הבדיקה עברה` }
+    : { status: 'error', message: delivery.detail };
 }
 
 /* --- orders ---------------------------------------------------------------- */

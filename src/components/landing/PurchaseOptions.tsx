@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { Campaign } from '@/content/campaigns';
 import { readTracking, type Tracking } from '@/lib/tracking';
+import { trackClick, type TrackedButton } from '@/lib/track-click';
 import styles from './PurchaseOptions.module.css';
 
 type Purchase = NonNullable<Campaign['purchase']>;
@@ -47,7 +48,7 @@ function StoreIcon() {
   );
 }
 
-export function PurchaseOptions({ purchase }: { purchase: Purchase }) {
+export function PurchaseOptions({ campaign, purchase }: { campaign: string; purchase: Purchase }) {
   // Server-rendered href carries our UTMs; after mount we add the visitor's origin.
   const [shopUrl, setShopUrl] = useState(() => buildShopUrl(purchase.online));
 
@@ -59,6 +60,8 @@ export function PurchaseOptions({ purchase }: { purchase: Purchase }) {
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encode(pickup.mapsQuery)}`;
   const wazeUrl = `https://waze.com/ul?q=${encode(pickup.mapsQuery)}&navigate=yes`;
 
+  const track = (button: TrackedButton, href: string) => () => trackClick(campaign, button, href);
+
   return (
     <section className={styles.order} id="order">
       <div className={styles.card} data-animate="order-card">
@@ -68,13 +71,13 @@ export function PurchaseOptions({ purchase }: { purchase: Purchase }) {
         </div>
 
         <div className={styles.options}>
-          <a className={styles.online} href={shopUrl} target="_blank" rel="noopener">
+          <a className={styles.online} href={shopUrl} target="_blank" rel="noopener" onClick={track('online', shopUrl)}>
             <TruckIcon />
             <span>{purchase.online.label} ›</span>
           </a>
 
           <div className={styles.pickupDetails}>
-            <a className={styles.pickup} href={mapsUrl} target="_blank" rel="noopener">
+            <a className={styles.pickup} href={mapsUrl} target="_blank" rel="noopener" onClick={track('pickup', mapsUrl)}>
               <StoreIcon />
               <span>{pickup.label}</span>
             </a>
@@ -82,10 +85,10 @@ export function PurchaseOptions({ purchase }: { purchase: Purchase }) {
               <strong>{pickup.address}</strong> · {pickup.note}
             </p>
             <div className={styles.navLinks}>
-              <a className={styles.navLink} href={wazeUrl} target="_blank" rel="noopener">
+              <a className={styles.navLink} href={wazeUrl} target="_blank" rel="noopener" onClick={track('waze', wazeUrl)}>
                 ניווט ב-Waze
               </a>
-              <a className={styles.navLink} href={mapsUrl} target="_blank" rel="noopener">
+              <a className={styles.navLink} href={mapsUrl} target="_blank" rel="noopener" onClick={track('maps', mapsUrl)}>
                 Google Maps
               </a>
             </div>
