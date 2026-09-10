@@ -111,13 +111,13 @@ export function LandingMotion({ children }: { children: ReactNode }) {
           }
 
           /* --- order card rises into view ------------------------------- */
-          gsap.from('[data-animate="form-card"]', {
+          gsap.from('[data-animate="order-card"]', {
             opacity: 0,
             y: 40,
             duration: 0.8,
             ease: 'power3.out',
             scrollTrigger: {
-              trigger: '[data-animate="form-card"]',
+              trigger: '[data-animate="order-card"]',
               start: 'top 88%',
               once: true,
             },

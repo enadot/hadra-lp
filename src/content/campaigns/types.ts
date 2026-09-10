@@ -27,7 +27,31 @@ export type Campaign = {
   /** Full-bleed background behind the whole page. */
   background: { src: string; width: number; height: number };
 
-  form: {
+  /**
+   * Order section. Exactly one of `purchase` / `form` should be set:
+   * `purchase` = buttons to an external shop + self-pickup details;
+   * `form` = a lead form whose orders go to the webhook set in /admin.
+   */
+  purchase?: {
+    title: string;
+    subtitle: string;
+    online: {
+      label: string;
+      url: string;
+      /** UTM tags appended to the shop link so the shop's analytics attribute the sale to this page. */
+      utm: { source: string; medium: string; campaign: string };
+    };
+    pickup: {
+      label: string;
+      storeName: string;
+      address: string;
+      note: string;
+      /** Free-text query for the navigation links. */
+      mapsQuery: string;
+    };
+  };
+
+  form?: {
     title: string;
     subtitle: string;
     consentLabel: string;

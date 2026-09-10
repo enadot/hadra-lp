@@ -91,18 +91,38 @@ export default async function AdminPage() {
               </Link>
             </div>
 
-            <WebhookPanel
-              slug={campaign.slug}
-              campaignTitle={campaign.hero.title}
-              settings={settings}
-            />
+            {campaign.form ? (
+              <>
+                <WebhookPanel
+                  slug={campaign.slug}
+                  campaignTitle={campaign.hero.title}
+                  settings={settings}
+                />
 
-            <section className={styles.panel}>
-              <h2 className={styles.panelTitle}>
-                הזמנות אחרונות ({orders.length})
-              </h2>
-              <OrdersTable orders={orders} />
-            </section>
+                <section className={styles.panel}>
+                  <h2 className={styles.panelTitle}>
+                    הזמנות אחרונות ({orders.length})
+                  </h2>
+                  <OrdersTable orders={orders} />
+                </section>
+              </>
+            ) : (
+              <p className={styles.hint}>
+                דף זה מפנה לרכישה בחנות החיצונית ולאיסוף עצמי — אין בו טופס, ולכן
+                אין וובהוק או הזמנות לנהל.
+                {campaign.purchase ? (
+                  <>
+                    {' '}
+                    קישור הרכישה נשלח עם UTM:{' '}
+                    <code>
+                      {campaign.purchase.online.utm.source} / {campaign.purchase.online.utm.medium} /{' '}
+                      {campaign.purchase.online.utm.campaign}
+                    </code>
+                    .
+                  </>
+                ) : null}
+              </p>
+            )}
           </section>
         ))}
       </div>

@@ -1,0 +1,142 @@
+.order {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--shell);
+  padding: 48px var(--gutter) 64px;
+}
+
+.card {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 32px;
+  background: var(--glass-bg);
+  border: 1.5px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-form-title);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--gold);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 19px;
+  color: var(--ice-dim);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* shared button shape — big, full width, icon + label */
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 74px;
+  padding: 18px 24px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: clamp(20px, 2.4vw, 24px);
+  line-height: 1.2;
+  text-align: center;
+  transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.button:hover,
+.button:focus-visible {
+  transform: translateY(-2px);
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.online {
+  composes: button;
+  background: var(--gold);
+  color: var(--gold-ink);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+}
+
+.online:hover,
+.online:focus-visible {
+  background: var(--gold-bright);
+  color: var(--gold-ink);
+}
+
+.pickup {
+  composes: button;
+  background: #ffffff;
+  color: var(--navy);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+}
+
+.pickup:hover,
+.pickup:focus-visible {
+  background: var(--ice);
+  color: var(--navy);
+}
+
+.pickupDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.address {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--ice-soft);
+}
+
+.address strong {
+  color: #ffffff;
+}
+
+.navLinks {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.navLink {
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.navLink:hover {
+  color: var(--gold-bright);
+}

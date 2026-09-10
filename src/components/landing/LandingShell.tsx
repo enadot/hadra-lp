@@ -5,12 +5,13 @@ import { Masthead } from './Masthead';
 import { Hero } from './Hero';
 import { ProductBlock } from './ProductBlock';
 import { OrderForm } from './OrderForm';
+import { PurchaseOptions } from './PurchaseOptions';
 import { SiteFooter } from './SiteFooter';
 import styles from './LandingShell.module.css';
 
 /**
  * The approved layout for הדרא campaigns: background, masthead, hero, product
- * block, order form, footer. A new landing page can reuse this shell, or
+ * block, order section (shop buttons or lead form), footer. A new landing page can reuse this shell, or
  * compose the same blocks in a different order for a different design.
  */
 export function LandingShell({ campaign }: { campaign: Campaign }) {
@@ -31,7 +32,11 @@ export function LandingShell({ campaign }: { campaign: Campaign }) {
         <Masthead />
         <Hero hero={campaign.hero} />
         <ProductBlock product={campaign.product} />
-        <OrderForm campaign={campaign.slug} form={campaign.form} />
+        {campaign.purchase ? (
+          <PurchaseOptions purchase={campaign.purchase} />
+        ) : campaign.form ? (
+          <OrderForm campaign={campaign.slug} form={campaign.form} />
+        ) : null}
         <SiteFooter text={campaign.footer.text} />
       </div>
     </LandingMotion>

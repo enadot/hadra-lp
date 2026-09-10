@@ -9,7 +9,7 @@ import styles from './OrderForm.module.css';
 
 type Props = {
   campaign: string;
-  form: Campaign['form'];
+  form: NonNullable<Campaign['form']>;
 };
 
 export function OrderForm({ campaign, form }: Props) {
@@ -94,7 +94,7 @@ export function OrderForm({ campaign, form }: Props) {
 
   return (
     <section className={styles.order} id="order">
-      <div className={styles.card} data-animate="form-card">
+      <div className={styles.card} data-animate="order-card">
         {submittedName ? (
           <div className={styles.success} ref={successRef} tabIndex={-1}>
             <span className={styles.successTitle}>{form.successTitle}</span>

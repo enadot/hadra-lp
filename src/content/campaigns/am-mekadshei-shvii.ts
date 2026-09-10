@@ -36,20 +36,21 @@ export const amMekadsheiShvii: Campaign = {
     height: 2912,
   },
 
-  form: {
+  purchase: {
     title: 'להזמנת הספר',
-    subtitle: 'מלאו פרטים ונחזור אליכם להשלמת ההזמנה · 45 ש"ח בלבד',
-    consentLabel: 'אני מסכים שיצרו איתי קשר מטעם "הדרא" לבירור והמשך הזמנה',
-    submitLabel: 'אני רוצה את הספר »',
-    successTitle: 'ההזמנה התקבלה!',
-    successText: 'תודה {name}, נציג יחזור אליכם בהקדם להשלמת ההזמנה.',
-    quantities: [
-      { value: '1', label: 'כמות: 1 ספר' },
-      { value: '2', label: 'כמות: 2 ספרים' },
-      { value: '3', label: 'כמות: 3 ספרים' },
-      { value: '4', label: 'כמות: 4 ספרים' },
-      { value: '5', label: 'כמות: 5 ומעלה' },
-    ],
+    subtitle: 'בחרו את הדרך הנוחה לכם · 45 ש"ח בלבד',
+    online: {
+      label: 'לרכישה מקוונת ומשלוח עד הבית',
+      url: 'https://www.hbooks.co.il/product/%D7%A2%D7%9D-%D7%9E%D7%A7%D7%93%D7%A9%D7%99-%D7%A9%D7%91%D7%99%D7%A2%D7%99--%D7%94%D7%9C%D7%9B%D7%95%D7%AA-%D7%A9%D7%91%D7%AA-%D7%91%D7%A9%D7%A4%D7%94-%D7%91%D7%A8%D7%95%D7%A8%D7%94-%D7%95%D7%90%D7%A7%D7%98%D7%95%D7%90%D7%9C%D7%99%D7%AA--%D7%94%D7%A8%D7%94%D7%92-%D7%9E%D7%A0%D7%97%D7%9D-%D7%90%D7%A7%D7%A8%D7%9E%D7%9F-%D7%A9%D7%9C%D7%99%D7%98%D7%90',
+      utm: { source: 'hadra-lp', medium: 'landing-page', campaign: 'am-mekadshei-shvii' },
+    },
+    pickup: {
+      label: 'איסוף עצמי מחנות ספרי חיים',
+      storeName: 'ספרי חיים',
+      address: 'כנפי נשרים 26, ירושלים',
+      note: 'בחניה של רמי לוי',
+      mapsQuery: 'ספרי חיים, כנפי נשרים 26, ירושלים',
+    },
   },
 
   footer: { text: 'הוצאה לאור והפצה: הדרא — הרבה יותר מהוצאה לאור' },
